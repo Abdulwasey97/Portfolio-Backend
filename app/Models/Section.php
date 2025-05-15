@@ -11,6 +11,7 @@ class Section extends Model
 
     protected $fillable = [
         'page_id',
+        'project_id',
         'title',
         'content',
         'image',
@@ -21,5 +22,10 @@ class Section extends Model
     public function page()
     {
         return $this->belongsTo(Page::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }

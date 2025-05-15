@@ -6,7 +6,7 @@
             @if($showSuccess)
                 <div class="success-message">
                     <p>{{ $successMessage }}</p>
-                    <div class="countdown">Redirecting in <span id="countdown">10</span> seconds...</div>
+                    <div class="countdown">Redirecting in <span id="countdown">5</span> seconds...</div>
                 </div>
             @else
                 <form wire:submit.prevent="login" class="login-form">
@@ -64,7 +64,7 @@
 
         Livewire.on('loginSuccess', function () {
             // Start countdown
-            let seconds = 10;
+            let seconds = 5;
             const countdownElement = document.getElementById('countdown');
 
             const countdownInterval = setInterval(function() {

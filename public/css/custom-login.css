@@ -18,7 +18,7 @@ body {
 /* Login form container */
 .login-wrapper {
     width: 100%;
-    max-width: 420px;
+    max-width: 520px;
     margin: 0 auto;
 }
 
@@ -27,6 +27,8 @@ body {
     border-radius: 16px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     padding: 2.5rem;
+    width: 100%;
+    max-width: 520px;
     overflow: hidden;
     position: relative;
     transition: all 0.3s ease;
@@ -108,9 +110,9 @@ body {
 /* Checkbox and forgot password */
 .remember-forgot {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.25rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .remember-me {
@@ -121,6 +123,9 @@ body {
 }
 
 .remember-me input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
 .forgot-link {
     font-size: 0.875rem;
     color: #6366f1;

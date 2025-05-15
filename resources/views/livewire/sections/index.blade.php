@@ -1,7 +1,13 @@
 <div class="table-container">
     <div class="table-header">
         <h1 class="table-title">
-            {{ $pageId ? 'Sections for: ' . $page->title : 'All Sections' }}
+            @if($pageId)
+                Sections for: {{ $page->title }}
+            @elseif($projectId)
+                Sections for: {{ $project->title }}
+            @else
+                All Sections
+            @endif
         </h1>
         <div class="header-actions">
             @if($pageId)
@@ -11,6 +17,14 @@
                 </a>
                 <a href="{{ route('pages.index') }}" class="secondary-button">
                     Back to Pages
+                </a>
+            @elseif($projectId)
+                <a href="{{ route('sections.create', ['project_id' => $projectId]) }}" class="create-button">
+                    <span class="create-icon">+</span>
+                    Add Section
+                </a>
+                <a href="{{ route('projects.index') }}" class="secondary-button">
+                    Back to Projects
                 </a>
             @else
                 <a href="{{ route('sections.create') }}" class="create-button">
@@ -59,8 +73,8 @@
             <thead>
                 <tr>
                     <th>Order</th>
-                    @if(!$pageId)
-                        <th>Page</th>
+                    @if(!$pageId && !$projectId)
+                        <th>Parent</th>
                     @endif
                     <th>Title</th>
                     <th>Status</th>
@@ -72,11 +86,17 @@
                 @forelse ($sections as $section)
                     <tr>
                         <td class="order-cell">{{ $section->order }}</td>
-                        @if(!$pageId)
+                        @if(!$pageId && !$projectId)
                             <td>
-                                <a href="{{ route('sections.index', ['page_id' => $section->page_id]) }}" class="page-link">
-                                    {{ $section->page->title }}
-                                </a>
+                                @if($section->page_id)
+                                    <a href="{{ route('sections.index', ['page_id' => $section->page_id]) }}" class="page-link">
+                                        {{ $section->page->title }} (Page)
+                                    </a>
+                                @elseif($section->project_id)
+                                    <a href="{{ route('sections.index', ['project_id' => $section->project_id]) }}" class="page-link">
+                                        {{ $section->project->title }} (Project)
+                                    </a>
+                                @endif
                             </td>
                         @endif
                         <td class="title-cell">
@@ -110,13 +130,18 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ $pageId ? 5 : 6 }}" class="empty-table">
+                        <td colspan="{{ ($pageId || $projectId) ? 5 : 6 }}" class="empty-table">
                             <div class="empty-container">
                                 <div class="empty-icon">📑</div>
                                 <h3>No sections found</h3>
                                 @if($pageId)
                                     <p>Get started by adding a section to this page</p>
                                     <a href="{{ route('sections.create', ['page_id' => $pageId]) }}" class="empty-action">
+                                        Add Section
+                                    </a>
+                                @elseif($projectId)
+                                    <p>Get started by adding a section to this project</p>
+                                    <a href="{{ route('sections.create', ['project_id' => $projectId]) }}" class="empty-action">
                                         Add Section
                                     </a>
                                 @else

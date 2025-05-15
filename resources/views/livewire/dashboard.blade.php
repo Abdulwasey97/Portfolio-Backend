@@ -28,7 +28,10 @@
                         <a href="{{ route('sections.index') }}"><span>📑</span> Sections</a>
                     </li>
 
-
+                    <!-- Projects Management -->
+                    <li class="nav-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
+                        <a href="{{ route('projects.index') }}"><span>💼</span> Projects</a>
+                    </li>
                 </ul>
             </nav>
         </div>

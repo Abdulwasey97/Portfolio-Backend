@@ -3,6 +3,7 @@
 namespace App\Livewire\Sections;
 
 use App\Models\Page;
+use App\Models\Project;
 use App\Models\Section;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,19 +13,24 @@ class Index extends Component
     use WithPagination;
 
     public $pageId;
+    public $projectId;
     public $search = '';
     public $page;
+    public $project;
     public $showDeleteModal = false;
     public $sectionToDelete = null;
 
     protected $queryString = ['search'];
 
-    public function mount($page_id = null)
+    public function mount($page_id = null, $project_id = null)
     {
         $this->pageId = $page_id;
+        $this->projectId = $project_id;
 
         if ($page_id) {
             $this->page = Page::findOrFail($page_id);
+        } elseif ($project_id) {
+            $this->project = Project::findOrFail($project_id);
         }
     }
 
@@ -68,8 +74,10 @@ class Index extends Component
 
         if ($this->pageId) {
             $query->where('page_id', $this->pageId);
+        } elseif ($this->projectId) {
+            $query->where('project_id', $this->projectId);
         } else {
-            $query->with('page');
+            $query->with(['page', 'project']);
         }
 
         if ($this->search) {
@@ -85,7 +93,11 @@ class Index extends Component
         return view('livewire.sections.index', [
             'sections' => $sections,
         ])->layout('components.layouts.app', [
-            'title' => $this->pageId ? 'Sections for: ' . $this->page->title : 'All Sections'
+            'title' => $this->pageId
+                ? 'Sections for: ' . $this->page->title
+                : ($this->projectId
+                    ? 'Sections for: ' . $this->project->title
+                    : 'All Sections')
         ]);
     }
 }

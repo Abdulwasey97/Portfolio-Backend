@@ -1,11 +1,19 @@
 <div class="detail-container">
     <div class="detail-header">
         <div class="breadcrumbs">
-            <a href="{{ route('pages.index') }}" class="breadcrumb-link">Pages</a>
-            <span class="breadcrumb-separator">/</span>
-            <a href="{{ route('sections.index', ['page_id' => $section->page_id]) }}" class="breadcrumb-link">
-                {{ $section->page->title }} Sections
-            </a>
+            @if($section->page_id)
+                <a href="{{ route('pages.index') }}" class="breadcrumb-link">Pages</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="{{ route('sections.index', ['page_id' => $section->page_id]) }}" class="breadcrumb-link">
+                    {{ $section->page->title }} Sections
+                </a>
+            @elseif($section->project_id)
+                <a href="{{ route('projects.index') }}" class="breadcrumb-link">Projects</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="{{ route('sections.index', ['project_id' => $section->project_id]) }}" class="breadcrumb-link">
+                    {{ $section->project->title }} Sections
+                </a>
+            @endif
             <span class="breadcrumb-separator">/</span>
             <span class="breadcrumb-current">{{ $section->title }}</span>
         </div>
@@ -14,9 +22,15 @@
             <a href="{{ route('sections.edit', $section->id) }}" class="action-button secondary-action">
                 <span class="action-icon">✏️</span> Edit Section
             </a>
-            <a href="{{ route('pages.detail', $section->page_id) }}" class="action-button primary-action">
-                <span class="action-icon">📄</span> View Page
-            </a>
+            @if($section->page_id)
+                <a href="{{ route('pages.detail', $section->page_id) }}" class="action-button primary-action">
+                    <span class="action-icon">📄</span> View Page
+                </a>
+            @elseif($section->project_id)
+                <a href="{{ route('projects.detail', $section->project_id) }}" class="action-button primary-action">
+                    <span class="action-icon">📄</span> View Project
+                </a>
+            @endif
         </div>
     </div>
 
@@ -63,6 +77,7 @@
                     <span class="meta-label">Order</span>
                     <span class="meta-value">#{{ $section->order }}</span>
                 </div>
+                @if($section->page_id)
                 <div class="meta-item">
                     <span class="meta-label">Page</span>
                     <span class="meta-value">
@@ -71,6 +86,16 @@
                         </a>
                     </span>
                 </div>
+                @elseif($section->project_id)
+                <div class="meta-item">
+                    <span class="meta-label">Project</span>
+                    <span class="meta-value">
+                        <a href="{{ route('projects.detail', $section->project_id) }}" class="meta-link">
+                            {{ $section->project->title }}
+                        </a>
+                    </span>
+                </div>
+                @endif
                 <div class="meta-item">
                     <span class="meta-label">Created</span>
                     <span class="meta-value">{{ $section->created_at->format('M d, Y h:i A') }}</span>
@@ -92,15 +117,30 @@
 
     <div class="section-navigation">
         @php
-            $prevSection = \App\Models\Section::where('page_id', $section->page_id)
-                ->where('order', '<', $section->order)
-                ->orderBy('order', 'desc')
-                ->first();
+            if ($section->page_id) {
+                $prevSection = \App\Models\Section::where('page_id', $section->page_id)
+                    ->where('order', '<', $section->order)
+                    ->orderBy('order', 'desc')
+                    ->first();
 
-            $nextSection = \App\Models\Section::where('page_id', $section->page_id)
-                ->where('order', '>', $section->order)
-                ->orderBy('order', 'asc')
-                ->first();
+                $nextSection = \App\Models\Section::where('page_id', $section->page_id)
+                    ->where('order', '>', $section->order)
+                    ->orderBy('order', 'asc')
+                    ->first();
+            } elseif ($section->project_id) {
+                $prevSection = \App\Models\Section::where('project_id', $section->project_id)
+                    ->where('order', '<', $section->order)
+                    ->orderBy('order', 'desc')
+                    ->first();
+
+                $nextSection = \App\Models\Section::where('project_id', $section->project_id)
+                    ->where('order', '>', $section->order)
+                    ->orderBy('order', 'asc')
+                    ->first();
+            } else {
+                $prevSection = null;
+                $nextSection = null;
+            }
         @endphp
 
         <div class="nav-links">

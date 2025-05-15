@@ -26,7 +26,6 @@ class Form extends Component
     protected function rules()
     {
         return [
-            'pageId' => 'required|exists:pages,id',
             'title' => 'required|min:3',
             'content' => 'required',
             'image' => $this->sectionId ? 'nullable|image|max:1024' : 'nullable|image|max:1024',
@@ -63,9 +62,10 @@ class Form extends Component
 
     public function updatedPageId()
     {
-        // Update order when page changes
-        $maxOrder = Section::where('page_id', $this->pageId)->max('order');
-        $this->order = $maxOrder ? $maxOrder + 1 : 1;
+        if ($this->pageId) {
+            $maxOrder = Section::where('page_id', $this->pageId)->max('order');
+            $this->order = $maxOrder ? $maxOrder + 1 : 1;
+        }
     }
 
     public function removeImage()
@@ -110,7 +110,11 @@ class Form extends Component
             session()->flash('message', 'Section created successfully.');
         }
 
-        return redirect()->route('sections.index', ['page_id' => $this->pageId]);
+        if ($this->pageId) {
+            return redirect()->route('sections.index', ['page_id' => $this->pageId]);
+        }
+
+        return redirect()->route('sections.index');
     }
 
     public function render()
