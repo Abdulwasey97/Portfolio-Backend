@@ -32,5 +32,5 @@ Follow these steps to set up the project locally:
 
 ### 1️⃣ Clone the Repository  
 ```bash
-git clone https://github.com/your-username/your-project-name.git
-cd your-project-name
+git clone https://github.com/Abdulwasey97/Portfolio-Backend.git
+cd Portfolio-Backend
